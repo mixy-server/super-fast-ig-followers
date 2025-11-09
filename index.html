@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM Panel Pro Order System (Global)</title>
+    <style>
+        /* --- 1. Base Styling --- */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ebee; padding: 20px; color: #333; }
+        .container { max-width: 500px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); position: relative; }
+        h2 { text-align: center; color: #d9534f; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 600; color: #555; }
+        
+        /* NOTE: Language selector section has been REMOVED for faster loading */
+
+        /* --- 2. Input & Button Styling --- */
+        input[type="text"], #total_price, .form-section input[type="text"] { 
+            width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; 
+            font-size: 1em; transition: border-color 0.3s; 
+        }
+        input[type="text"]:focus { border-color: #1a73e8; box-shadow: 0 0 5px rgba(26, 115, 232, 0.2); }
+        
+        /* Speed Buttons - INSTANT CLICK RESPONSE */
+        .speed-buttons button { 
+            padding: 10px 15px; 
+            margin-right: 10px; 
+            border: none; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            background-color: #f0f0f0; 
+            color: #333; 
+            font-weight: 500;
+        }
+        .speed-buttons button.active { background-color: #1a73e8; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+        
+        /* Submit Button */
+        #orderSubmit { 
+            width: 100%; 
+            background-color: #008000; 
+            color: white; 
+            padding: 15px 20px; 
+            margin-top: 25px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: bold; 
+            transition: background-color 0.3s; 
+            box-sizing: border-box; 
+        }
+        #orderSubmit:hover { background-color: #006400; }
+
+        /* Price Display & List */
+        .price-list { border: 1px dashed #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 6px; }
+        .price-list ul { list-style: none; padding: 0; text-align: left; }
+        .price-list ul li { margin-bottom: 8px; color: #555; font-weight: bold; display: flex; justify-content: space-between; }
+        .price-display { font-size: 1.1em; font-weight: bold; color: #d9534f; margin-top: 15px; padding: 10px; background-color: #fff3f4; border-radius: 6px; text-align: center; border: 1px solid #d9534f; }
+
+
+        /* --- 3. Payment Section Styling --- */
+        #payment-section { display: none; padding-top: 20px; } 
+        .payment-info { border: 2px solid #1a73e8; padding: 20px; border-radius: 8px; margin-bottom: 25px; background-color: #f7fbff; text-align: center;}
+        .qr-code { max-width: 250px; margin: 0 auto; }
+        .qr-code img { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; }
+        
+        /* UPI Link / Auto-Select Button Style */
+        .upi-link { 
+            display: block; 
+            margin-top: 15px; 
+            padding: 15px; 
+            background-color: #008000; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            transition: background-color 0.3s; 
+        }
+        .upi-link:hover { background-color: #006400; }
+
+        /* New Payment Gateways Styling */
+        .gateway-link { 
+            display: block; 
+            margin-top: 10px; 
+            padding: 12px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 1em;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+        .gateway-link img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        
+        /* Specific Gateway Colors (Examples) */
+        #cryptomus { background-color: #00a068; }
+        #cryptomus:hover { background-color: #008c5c; }
+        
+        #payeer { background-color: #0087f7; }
+        #payeer:hover { background-color: #0076db; }
+        
+        #binancepay { background-color: #f3ba2f; color: #333; }
+        #binancepay:hover { background-color: #d1a021; }
+
+
+        .upi-details { font-size: 1.2em; color: #333; margin: 15px 0; font-weight: bold; }
+        .app-logos img { width: 40px; height: 40px; margin: 0 8px; border-radius: 50%; vertical-align: middle; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+
+        #totalAmountDisplay { font-size: 1.8em; color: #008000; font-weight: 700; margin-bottom: 20px; padding: 15px; border: 3px dashed #a8ffb2; border-radius: 8px; }
+        
+        /* UTR Form */
+        #utrSubmitButton { background-color: #ffc107; color: #333; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold; margin-top: 15px; transition: background-color 0.3s; }
+        #utrSubmitButton:hover { background-color: #e0a800; }
+        #utrInput { text-align: center !important; font-weight: bold; letter-spacing: 1px; }
+
+        /* Messages */
+        .message { margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 5px; display: none; text-align: left; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    </style>
+</head>
+<body>
+
+<audio id="typingSound" src="typing_sound.mp3" preload="metadata"></audio>
+
+<div class="container">
+    
+    <div id="order-section" class="form-section">
+        <h2>🚀 INSTAGRAM SUPER FAST FOLLOWERS</h2> 
+
+        <div class="price-list">
+            <h3>Service Rates (Updated Price List)</h3>
+            <ul>
+                <li><span>✅ **100 Followers**</span> <span>Rs. 9.40</span></li>
+                <li><span>✅ **500 Followers**</span> <span>Rs. 47.00</span></li>
+                <li><span>✅ **1K Followers**</span> <span>Rs. 94.00</span></li>
+                <li><span>✅ **50K Followers**</span> <span>Rs. 4700.00</span></li>
+            </ul>
+        </div>
+
+        <form id="orderForm" onsubmit="processOrder(event)">
+            
+            <label for="username">🎯 Instagram Username <span style="color: red;">*</span></label>
+            <input type="text" id="username" name="username" placeholder="@your_instagram_handle" required>
+            
+            <label for="whatsapp">📱 WhatsApp Number <span style="color: red;">*</span></label>
+            <input type="text" id="whatsapp" name="whatsapp" placeholder="98XXXXXXXX" required pattern="[0-9]{10,15}">
+            
+            <label>⏱️ Service Speed</label>
+            <div class="speed-buttons">
+                <button type="button" data-speed="Fast" class="active">🚀 Fast</button>
+                <button type="button" data-speed="Medium">⏳ Medium</button>
+                <button type="button" data-speed="Slow">🐌 Slow</button>
+                <input type="hidden" id="service_speed" name="service_speed" value="Fast"> 
+            </div>
+            
+            <label for="quantity">🔢 Quantity (Min: 100, Max: 1,00,000) <span style="color: red;">*</span></label>
+            <input type="text" 
+                       id="quantity" 
+                       name="quantity" 
+                       value="100" 
+                       required 
+                       oninput="calculatePrice(); playTypingSound();" 
+                       inputmode="numeric" 
+                       pattern="[0-9]*"
+                       placeholder="Enter your desired number (e.g., 333)">
+            
+            <label for="total_price">💵 Total Price (₹)</label>
+            <input type="text" id="total_price" name="total_price_display" value="9.40" readonly>
+
+            <div class="price-display">
+                **Delivery Time:** Minimum 1 Minute to 2 Hours Maximum
+            </div>
+            
+            <input type="hidden" id="final_price" name="final_price" value="9.40">
+
+            <input type="submit" value="Place Order & Proceed to Payment" id="orderSubmit">
+        </form>
+    </div>
+
+    <div id="payment-section" class="form-section">
+        <h2>💳 Complete Payment</h2>
+        
+        <div id="totalAmountDisplay">
+            Amount Payable: ₹<span id="payableAmount">0.00</span>
+        </div>
+
+        <div class="payment-info">
+            
+            <h3 style="color: #008000; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">🇮🇳 Pay via UPI (Recommended)</h3>
+            
+            <div class="qr-code">
+                <img id="upiQrCode" src="" alt="Scan QR Code to Pay">
+            </div>
+
+            <div class="upi-details">
+                UPI ID: **mixy@ptyes**
+            </div>
+            
+            <a href="#" id="upiLink" class="upi-link" target="_blank">
+                Pay Now with UPI App
+            </a>
+            
+            <p style="color: #008000; font-weight: 600; margin-top: 15px;">
+                Please pay the EXACT amount shown above.
+            </p>
+            
+            <div class="app-logos" style="margin-top: 15px;">
+                <img src="paytm_logo.png" alt="Paytm">
+                <img src="phonepe_logo.png" alt="PhonePe">
+                <img src="gpay_logo.png" alt="Google Pay">
+                <img src="bhim_upi_logo.png" alt="BHIM UPI">
+                <p style="font-size: 0.8em; color: #777;">(Ensure these logo files are uploaded to your server)</p>
+            </div>
+
+            <hr style="border: 0; height: 1px; background: #eee; margin: 30px 0;">
+
+            <h3 style="color: #1a73e8; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">🌍 International Payment (5% Bonus)</h3>
+
+            <a href="#" id="cryptomus" class="gateway-link" onclick="alert('Redirecting to Cryptomus...'); return false;">
+                <img src="https://via.placeholder.com/24/00a068/ffffff?text=C" alt="Cryptomus Logo">
+                Cryptomus Payment | USDT | Bitcoin | Dogecoin | Ethereum | Litecoin (5% Bonus)
+            </a>
+
+            <a href="#" id="payeer" class="gateway-link" onclick="alert('Redirecting to Payeer/Advcash...'); return false;">
+                <img src="https://via.placeholder.com/24/0087f7/ffffff?text=P" alt="Payeer Logo">
+                Payeer | Advcash | Bitcoin | Perfect Money | Ethereum (5% Bonus)
+            </a>
+            
+            <a href="#" id="binancepay" class="gateway-link" onclick="alert('Redirecting to Binance Pay...'); return false;">
+                <img src="https://via.placeholder.com/24/f3ba2f/333333?text=B" alt="Binance Pay Logo">
+                Binance Pay (5% Bonus)
+            </a>
+            
+            <p style="color: #d9534f; margin-top: 20px;">
+                **Note:** International payments require manual confirmation using the form below.
+            </p>
+
+        </div>
+
+        <hr style="border: 0; height: 1px; background: #eee;">
+        
+        <form id="utrForm">
+            <h3 style="color: #1a73e8;">Enter Transaction ID / UTR / Hash</h3>
+            <input type="text" id="utrInput" placeholder="Enter your 12-digit UTR or Crypto Hash" 
+                    maxlength="50" required>
+            
+            <button type="submit" id="utrSubmitButton">Verify Payment</button>
+            
+            <div id="messageDisplay" class="message"></div>
+            
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // --- Global Constants ---
+    const PRICE_PER_1K = 94.00; 
+    const MIN_QTY = 100;
+    const MAX_QTY = 100000;
+    const UPI_ID = 'mixy@ptyes'; // Your UPI ID
+
+    // --- DOM Elements ---
+    const typingAudio = document.getElementById('typingSound');
+    const orderSection = document.getElementById('order-section');
+    const paymentSection = document.getElementById('payment-section');
+    const utrForm = document.getElementById('utrForm');
+    const utrInput = document.getElementById('utrInput');
+    const messageDisplay = document.getElementById('messageDisplay');
+    const payableAmountSpan = document.getElementById('payableAmount');
+    const quantityInput = document.getElementById('quantity');
+    const upiQrCodeImg = document.getElementById('upiQrCode'); 
+    const upiLink = document.getElementById('upiLink');
+
+
+    // ==============================================
+    //            ORDER FORM LOGIC
+    // ==============================================
+
+    function playTypingSound() {
+        if (typingAudio) {
+            typingAudio.currentTime = 0; 
+            typingAudio.play().catch(e => {});
+        }
+    }
+
+    function calculatePrice() {
+        let quantityValue = quantityInput.value.replace(/[^0-9]/g, '');
+        
+        if (quantityValue === "") {
+            document.getElementById('total_price').value = '0.00';
+            document.getElementById('final_price').value = '0.00';
+            quantityInput.value = ""; 
+            return;
+        }
+        
+        let quantity = parseInt(quantityValue) || 0;
+
+        if (quantity > MAX_QTY) {
+            quantity = MAX_QTY;
+            quantityInput.value = quantity;
+        }
+
+        if (quantityInput.value !== String(quantity)) {
+             quantityInput.value = quantity;
+        }
+
+        // Enforce Minimum Quantity on Calculation
+        if (quantity < MIN_QTY) {
+            quantity = MIN_QTY;
+        }
+
+        const totalPrice = (quantity / 1000) * PRICE_PER_1K;
+        const formattedPrice = totalPrice.toFixed(2);
+
+        document.getElementById('total_price').value = formattedPrice;
+        document.getElementById('final_price').value = formattedPrice;
+    }
+    
+    function processOrder(event) {
+        event.preventDefault(); 
+        
+        const quantity = parseInt(quantityInput.value) || 0;
+        const finalPrice = document.getElementById('final_price').value;
+        const username = document.getElementById('username').value;
+        const whatsapp = document.getElementById('whatsapp').value;
+        
+        if (quantity < MIN_QTY) {
+            alert("Please order a minimum of 100 Followers.");
+            return;
+        }
+        if (!username || !whatsapp) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+        
+        const paymentAmount = parseFloat(finalPrice).toFixed(2);
+        payableAmountSpan.textContent = paymentAmount;
+        
+        // 1. UPI Deep Link for Auto-Select Amount
+        const deepLink = `upi://pay?pa=${UPI_ID}&pn=SMM+Service&am=${paymentAmount}&cu=INR`;
+        upiLink.href = deepLink;
+
+        // 2. Generate and Update QR Code (Happens only after order button click)
+        const qrCodeData = `upi://pay?pa=${UPI_ID}&pn=SMM+Service&am=${paymentAmount}&cu=INR`;
+        const qrCodeAPIUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeData)}`;
+        upiQrCodeImg.src = qrCodeAPIUrl;
+        upiQrCodeImg.style.display = 'block';
+        
+        // 3. Display Payment Section
+        orderSection.style.display = 'none';
+        paymentSection.style.display = 'block';
+    }
+
+
+    // ==============================================
+    //            PAYMENT UTR/HASH LOGIC
+    // ==============================================
+
+    utrForm.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        
+        messageDisplay.style.display = 'block';
+        messageDisplay.classList.remove('success', 'error');
+
+        const txId = utrInput.value.trim();
+
+        if (txId.length < 5) {
+            messageDisplay.classList.add('error');
+            messageDisplay.innerHTML = '❌ Invalid ID! Please enter the Transaction ID / UTR / Hash.';
+            utrInput.focus();
+            
+        } else {
+            // NOTE: This is a client-side simulation. Real validation requires a server.
+            const finalAmount = payableAmountSpan.textContent;
+
+            messageDisplay.classList.add('success');
+            messageDisplay.innerHTML = `✅ **Payment Logged!** Your order for **₹${finalAmount}** has been placed.<br>TX ID: ${txId}. Please wait for confirmation.`;
+            
+            utrInput.disabled = true;
+            document.getElementById('utrSubmitButton').disabled = true;
+        }
+    });
+
+    // --- Initialization (Runs immediately after HTML structure is loaded) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // Calculate initial price only after the DOM is ready
+        calculatePrice(); 
+        
+        const speedButtons = document.querySelectorAll('.speed-buttons button');
+        const hiddenSpeedInput = document.getElementById('service_speed');
+        
+        // Speed button functionality
+        speedButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                speedButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                hiddenSpeedInput.value = this.getAttribute('data-speed');
+            });
+        });
+
+        // Ensure initial quantity is set to min if input is empty
+        if (quantityInput.value === "") {
+             quantityInput.value = MIN_QTY;
+             calculatePrice();
+        }
+    });
+</script>
+
+</body>
+</html>
