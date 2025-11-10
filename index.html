@@ -80,7 +80,7 @@
             transition: background-color 0.2s, color 0.2s;
         }
         
-        /* --- Speed Buttons - Active Colors (NEW LOGIC) --- */
+        /* --- Speed Buttons - Active Colors --- */
         .speed-buttons button.active {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
             font-weight: 700; /* Bold when active */
@@ -160,7 +160,14 @@
 
 
         /* --- 3. Payment Section Styling --- */
-        #payment-section { display: none; padding-top: 20px; } 
+        #order-section, #payment-section, #verification-section { 
+            display: block; /* Default state for JS control */ 
+        }
+        #payment-section, #verification-section { 
+            display: none; 
+            padding-top: 20px; 
+        } 
+        
         .payment-info { 
             border: 2px solid #e63946; /* Red Border */
             padding: 25px; 
@@ -273,6 +280,25 @@
         .error { background-color: #fff0f0; color: #dc3545; border: 1px solid #dc3545; } /* Light Red BG, Dark Red Text */
         .success { background-color: #e6ffe6; color: #1e7e34; border: 1px solid #4CAF50; } /* Light Green BG, Dark Green Text */
         
+        /* --- NEW: Verification Message and Spinning Icon Styles --- */
+        /* Yellow/Warning style for Verifying */
+        .verifying-message { 
+            background-color: #fff8e1; /* Light yellow background */
+            color: #f57f17; /* Orange/Gold text */
+            border: 1px solid #ffb300;
+        }
+        
+        /* Animation for Spinning Icon */
+        .spin-icon {
+            display: inline-block;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* --- END NEW STYLES --- */
+        
         /* International Gateway Links Styling (Base) */
         .gateway-link { 
             display: flex; 
@@ -336,7 +362,49 @@
             flex-shrink: 0; 
         }
 
-        /* --- 4. Mobile Responsiveness --- */
+        /* --- 4. Verification Section Styling --- */
+        #verification-section {
+            text-align: center;
+            padding: 30px;
+        }
+        .verification-icon {
+            font-size: 80px;
+            color: #4CAF50; /* Green checkmark */
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        .verification-text {
+            font-size: 1.8em;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .verification-note {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .order-details-box {
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .order-details-box p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .order-details-box strong {
+            color: #e63946;
+        }
+
+
+        /* --- 5. Mobile Responsiveness --- */
         @media (max-width: 520px) {
             body { padding: 10px; }
             .container {
@@ -393,11 +461,11 @@
             
             <label for="username">🎯 Instagram Username <span style="color: #e63946;">*</span></label>
             <input type="text" 
-                   id="username" 
-                   name="username" 
-                   placeholder="@your_instagram_handle" 
-                   required 
-                   oninput="formatUsername(this)">
+                       id="username" 
+                       name="username" 
+                       placeholder="@your_instagram_handle" 
+                       required 
+                       oninput="formatUsername(this)">
             
             <label for="whatsapp">📱 WhatsApp Number <span style="color: #e63946;">*</span></label>
             <input type="text" id="whatsapp" name="whatsapp" placeholder="98XXXXXXXX" required pattern="[0-9]{10,15}">
@@ -412,14 +480,14 @@
             
             <label for="quantity">🔢 Quantity (Min: 100, Max: 1,00,000) <span style="color: #e63946;">*</span></label>
             <input type="text" 
-                       id="quantity" 
-                       name="quantity" 
-                       value="100" 
-                       required 
-                       oninput="calculatePrice(); playTypingSound();" 
-                       inputmode="numeric" 
-                       pattern="[0-9]*"
-                       placeholder="Enter your desired number (e.g., 333)">
+                           id="quantity" 
+                           name="quantity" 
+                           value="100" 
+                           required 
+                           oninput="calculatePrice(); playTypingSound();" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           placeholder="Enter your desired number (e.g., 333)">
             
             <label for="total_price">💵 Total Price (₹)</label>
             <input type="text" id="total_price" name="total_price_display" value="9.40" readonly>
@@ -514,6 +582,34 @@
         </form>
     </div>
 
+    <div id="verification-section" class="form-section">
+        <h2>🎉 Order Placed Successfully!</h2>
+
+        <div class="verification-icon">✅</div>
+        <div class="verification-text">Payment Verification Initiated</div>
+        <div class="verification-note">
+            Your payment is being verified by our team. The order details have been **automatically sent to the operator via WhatsApp.**
+        </div>
+
+        <div class="order-details-box">
+            <p><strong>Order ID:</strong> <span id="displayOrderId"></span></p>
+            <p><strong>User ID:</strong> <span id="displayUserId"></span></p>
+            <p><strong>Username:</strong> <span id="displayUsername"></span></p>
+            <p><strong>Quantity:</strong> <span id="displayQuantity"></span> Followers</p>
+            <p><strong>Amount Claimed:</strong> ₹<span id="displayAmount"></span></p>
+            <p><strong>Transaction ID:</strong> <span id="displayTxId"></span></p>
+            <p><strong>Speed:</strong> <span id="displaySpeed"></span></p>
+        </div>
+
+        <div class="price-display" style="margin-top: 20px; background-color: #e6ffe6; border-color: #4CAF50; color: #1e7e34;">
+            **Your order should start within 1-2 hours after verification.**
+        </div>
+        
+        <a href="#" id="whatsappReopenLink" class="upi-link" style="margin-top: 25px; background-color: #25D366; color: white;" target="_blank">
+            📲 Re-open WhatsApp Confirmation
+        </a>
+    </div>
+
 </div>
 
 <script>
@@ -522,11 +618,16 @@
     const MIN_QTY = 100;
     const MAX_QTY = 100000;
     const UPI_ID = 'mixy@ptyes'; // Your UPI ID
+    const OPERATOR_WHATSAPP = '7377164926'; // Number to receive the order
+
+    // --- Global Variables to store order data ---
+    let orderData = {};
 
     // --- DOM Elements ---
     const typingAudio = document.getElementById('typingSound');
     const orderSection = document.getElementById('order-section');
     const paymentSection = document.getElementById('payment-section');
+    const verificationSection = document.getElementById('verification-section'); 
     const utrForm = document.getElementById('utrForm');
     const utrInput = document.getElementById('utrInput');
     const messageDisplay = document.getElementById('messageDisplay');
@@ -534,10 +635,25 @@
     const quantityInput = document.getElementById('quantity');
     const upiQrCodeImg = document.getElementById('upiQrCode'); 
     const upiLink = document.getElementById('upiLink');
+    const whatsappReopenLink = document.getElementById('whatsappReopenLink');
 
 
     // ==============================================
-    //            USERNAME FORMATTING LOGIC
+    //     GENERATOR FUNCTIONS 
+    // ==============================================
+
+    function generateRandomId(prefix, length) {
+        let result = '';
+        const characters = '0123456789';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return prefix + result;
+    }
+
+
+    // ==============================================
+    //     USERNAME FORMATTING LOGIC
     // ==============================================
 
     function formatUsername(input) {
@@ -562,7 +678,7 @@
 
 
     // ==============================================
-    //            HELPER FUNCTIONS 
+    //     HELPER FUNCTIONS 
     // ==============================================
 
     function copyUpiId(event) {
@@ -584,15 +700,16 @@
             });
     }
 
-    // NEW FUNCTION: Go back to the order screen
+    // Go back to the order screen
     function goBackToOrder() {
         paymentSection.style.display = 'none';
+        verificationSection.style.display = 'none';
         orderSection.style.display = 'block';
         
         // Reset the payment verification area
         utrInput.value = '';
         messageDisplay.style.display = 'none';
-        messageDisplay.classList.remove('success', 'error');
+        messageDisplay.classList.remove('success', 'error', 'verifying-message');
         document.getElementById('utrSubmitButton').disabled = false;
         utrInput.disabled = false;
         
@@ -601,10 +718,11 @@
     }
 
     // ==============================================
-    //            ORDER FORM LOGIC
+    //     ORDER FORM LOGIC
     // ==============================================
 
     function playTypingSound() {
+        // Simple function to play sound if defined
         if (typingAudio) {
             typingAudio.currentTime = 0; 
             typingAudio.play().catch(e => {});
@@ -629,11 +747,11 @@
         }
 
         if (quantityInput.value !== String(quantity)) {
-             quantityInput.value = quantity;
+              quantityInput.value = quantity;
         }
 
         if (quantity < MIN_QTY) {
-            quantity = MIN_QTY;
+            // Note: We allow typing but calculation uses the entered number
         }
 
         const totalPrice = (quantity / 1000) * PRICE_PER_1K;
@@ -650,26 +768,43 @@
         const finalPrice = document.getElementById('final_price').value;
         const username = document.getElementById('username').value;
         const whatsapp = document.getElementById('whatsapp').value;
+        const speed = document.getElementById('service_speed').value;
+
         
         if (quantity < MIN_QTY) {
-            alert("Please order a minimum of 100 Followers.");
+            alert(`Please order a minimum of ${MIN_QTY} Followers.`);
             return;
         }
-        if (!username || !whatsapp) {
-            alert("Please fill in all required fields.");
+        if (!username || !whatsapp || username === '@') {
+            alert("Please fill in all required fields correctly.");
             return;
         }
+
+        // Store data globally before moving to payment section
+        orderData = {
+            username: username,
+            whatsapp: whatsapp,
+            quantity: quantity,
+            amount: parseFloat(finalPrice).toFixed(2),
+            speed: speed,
+            // Generate IDs here so they are ready when payment is verified
+            orderId: generateRandomId('SMM-', 6), 
+            userId: generateRandomId('USER-', 5) 
+        };
         
-        const paymentAmount = parseFloat(finalPrice).toFixed(2);
+        const paymentAmount = orderData.amount;
         payableAmountSpan.textContent = paymentAmount;
         
         const qrCodeData = `upi://pay?pa=${UPI_ID}&pn=SMM+Service&am=${paymentAmount}&cu=INR`;
+        // Using a standard QR code generator URL (Ensure your API key is not needed if you switch to a self-hosted solution later)
         const qrCodeAPIUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeData)}`;
         upiQrCodeImg.src = qrCodeAPIUrl;
         upiQrCodeImg.style.display = 'block';
         
+        // Transition to payment section
         orderSection.style.display = 'none';
         paymentSection.style.display = 'block';
+        verificationSection.style.display = 'none';
         
         // Scroll to the top of the payment section
         paymentSection.scrollIntoView({ behavior: 'smooth' });
@@ -677,38 +812,92 @@
 
 
     // ==============================================
-    //            PAYMENT UTR/HASH LOGIC
+    //     PAYMENT UTR/HASH LOGIC
     // ==============================================
+
+    function initiateVerification(txId) {
+        // 1. Update stored data with transaction ID
+        orderData.txId = txId;
+
+        // 2. Prepare WhatsApp message (ensures all dynamic data is used)
+        const whatsappMessage = `*🚨 NEW SMM ORDER RECEIVED 🚨*\n\n` +
+                                `*Order ID:* ${orderData.orderId}\n` +
+                                `*User ID:* ${orderData.userId}\n` +
+                                `*Username:* ${orderData.username}\n` +
+                                `*Customer WhatsApp:* ${orderData.whatsapp}\n` +
+                                `*Quantity:* ${orderData.quantity.toLocaleString('en-IN')} Followers\n` +
+                                `*Amount Claimed:* ₹${orderData.amount}\n` +
+                                `*Speed:* ${orderData.speed}\n` +
+                                `*Transaction ID (UTR/Hash):* ${orderData.txId}\n\n` +
+                                `_Please verify payment for ₹${orderData.amount} against TX ID and start order immediately._`;
+        
+        const encodedMessage = encodeURIComponent(whatsappMessage);
+        const whatsappUrl = `https://wa.me/${OPERATOR_WHATSAPP}?text=${encodedMessage}`;
+        
+        // 3. Open WhatsApp link in a new tab (AUTOMATIC OPEN)
+        window.open(whatsappUrl, '_blank'); 
+        
+        // 4. Update the verification page content 
+        document.getElementById('displayOrderId').textContent = orderData.orderId;
+        document.getElementById('displayUserId').textContent = orderData.userId;
+        document.getElementById('displayUsername').textContent = orderData.username;
+        document.getElementById('displayQuantity').textContent = orderData.quantity.toLocaleString('en-IN');
+        document.getElementById('displayAmount').textContent = orderData.amount;
+        document.getElementById('displayTxId').textContent = orderData.txId;
+        document.getElementById('displaySpeed').textContent = orderData.speed;
+        
+        // 5. Set Re-open Link 
+        whatsappReopenLink.href = whatsappUrl;
+
+        // 6. Transition to verification section
+        paymentSection.style.display = 'none';
+        verificationSection.style.display = 'block';
+
+        // Scroll to the top of the verification section
+        verificationSection.scrollIntoView({ behavior: 'smooth' });
+    }
 
     utrForm.addEventListener('submit', function(event) {
         event.preventDefault(); 
-        
-        messageDisplay.style.display = 'block';
-        messageDisplay.classList.remove('success', 'error');
-
         const txId = utrInput.value.trim();
-
-        if (txId.length < 5) {
-            messageDisplay.classList.add('error');
-            messageDisplay.innerHTML = '❌ Invalid ID! Please enter the Transaction ID / UTR / Hash.';
+        
+        if (txId.length < 5) { // Basic validation for Transaction ID
+            messageDisplay.classList.remove('success', 'verifying-message');
+            messageDisplay.classList.add('message', 'error');
+            messageDisplay.style.display = 'block';
+            messageDisplay.innerHTML = `⚠️ **Error:** Please enter a valid Transaction ID / UTR / Hash.`;
             utrInput.focus();
-            
-        } else {
-            const finalAmount = payableAmountSpan.textContent;
-
-            messageDisplay.classList.add('success');
-            messageDisplay.innerHTML = `✅ **Payment Logged!** Your order for **₹${finalAmount}** has been placed.<br>TX ID: ${txId}. Please wait for confirmation.`;
-            
-            utrInput.disabled = true;
-            document.getElementById('utrSubmitButton').disabled = true;
+            return;
         }
+
+        // Display Verifying Message (START OF 3-SECOND SIMULATION)
+        messageDisplay.classList.remove('error', 'success');
+        messageDisplay.classList.add('message', 'verifying-message');
+        messageDisplay.style.display = 'block';
+        messageDisplay.innerHTML = `<span class="spin-icon">🔄</span> **Verifying Payment...** Please wait 3 seconds.`;
+        
+        utrInput.disabled = true;
+        document.getElementById('utrSubmitButton').disabled = true;
+        document.getElementById('backToOrder').disabled = true;
+
+        // Simulate Server-side verification delay (3 seconds)
+        setTimeout(() => {
+            // Once verified (simulated)
+            messageDisplay.innerHTML = `<span class="spin-icon">✅</span> **Payment Verified!** TX ID: ${txId}.`;
+            messageDisplay.classList.remove('verifying-message');
+            messageDisplay.classList.add('success');
+            messageDisplay.style.display = 'block'; // Keep it visible for a moment
+            
+            // Initiate the main action: WhatsApp auto-open and page transition
+            initiateVerification(txId);
+            
+        }, 3000); // 3 seconds delay
     });
 
     // --- Initialization ---
+    window.onload = calculatePrice;
+    
     document.addEventListener('DOMContentLoaded', () => {
-        
-        calculatePrice(); 
-        
         const speedButtons = document.querySelectorAll('.speed-buttons button');
         const hiddenSpeedInput = document.getElementById('service_speed');
         
