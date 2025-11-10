@@ -5,39 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMM Panel Pro Order System (Global)</title>
     <style>
-        /* --- 1. Base Styling (Professional Dark Theme) --- */
+        /* --- 1. Base Styling (Professional Red/White Theme) --- */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #121212; /* Dark Charcoal Background */ 
+            background-color: #f0f0f0; /* Light Grey/Off-White Background */ 
             padding: 20px; /* Desktop Padding */
-            color: #e0e0e0; /* Light text */
+            color: #333333; /* Dark text for readability */
         }
         .container { 
             max-width: 500px; 
             margin: 0 auto; 
-            background: #1f1f1f; /* Slightly lighter dark container */ 
+            background: #ffffff; /* Pure White Container */ 
             padding: 30px; 
             border-radius: 12px; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
             position: relative; 
         }
         h2 { 
             text-align: center; 
-            color: #4a90e2; /* Deep Blue Accent for main title */ 
+            color: #e63946; /* Professional Red Accent for main title */ 
             margin-bottom: 25px; 
-            border-bottom: 2px solid #333; 
+            border-bottom: 2px solid #eeeeee; /* Light border */ 
             padding-bottom: 10px; 
             font-weight: 700;
         }
         h3 { 
-            color: #4a90e2; /* Deep Blue Accent for section titles */ 
+            color: #e63946; /* Professional Red Accent for section titles */ 
         }
         label { 
             display: block; 
             margin-top: 15px; 
             margin-bottom: 5px; 
             font-weight: 600; 
-            color: #e0e0e0; 
+            color: #333333; 
         }
 
         /* --- 2. Input & Button Styling --- */
@@ -45,49 +45,72 @@
             width: 100%; 
             padding: 14px; 
             margin-bottom: 15px; 
-            border: 1px solid #444444; 
-            background-color: #2a2a2a; 
-            color: #e0e0e0;
+            border: 1px solid #dddddd; /* Light Border */ 
+            background-color: #fcfcfc; /* Very light input background */ 
+            color: #333333;
             border-radius: 8px; 
             box-sizing: border-box; 
             font-size: 1.05em; 
             transition: border-color 0.3s, box-shadow 0.3s; 
         }
         input[type="text"]:focus { 
-            border-color: #4a90e2; 
-            box-shadow: 0 0 8px rgba(74, 144, 226, 0.4); 
-            background-color: #2a2a2a;
+            border-color: #e63946; /* Red on focus */
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.2); 
+            background-color: #ffffff;
         }
         
         /* Speed Buttons - Container */
         .speed-buttons {
-            display: flex; /* Flexbox setup */
-            gap: 10px; /* Space between buttons */
+            display: flex; 
+            gap: 10px; 
         }
 
-        /* Speed Buttons - Button Style */
+        /* Speed Buttons - Button Style (Default Inactive) */
         .speed-buttons button { 
             padding: 10px 15px; 
-            margin-right: 0; /* Margin handled by gap/flex */
-            border: none; 
+            margin-right: 0; 
+            border: 1px solid #dddddd; 
             border-radius: 25px; 
             cursor: pointer; 
-            background-color: #333333; 
-            color: #ffffff; 
+            background-color: #f5f5f5; /* Light grey button */
+            color: #333333; 
             font-weight: 600;
-            flex-grow: 1; /* Allows buttons to share space equally */
-            min-width: 0; /* Fixes potential overflow issue */
-        }
-        .speed-buttons button.active { 
-            background-color: #4a90e2; 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            flex-grow: 1; 
+            min-width: 0; 
+            transition: background-color 0.2s, color 0.2s;
         }
         
-        /* Submit Button */
+        /* --- Speed Buttons - Active Colors (NEW LOGIC) --- */
+        .speed-buttons button.active {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+            font-weight: 700; /* Bold when active */
+        }
+        
+        /* Fast: Green */
+        .speed-buttons button[data-speed="Fast"].active {
+            background-color: #4CAF50; /* Green */
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        /* Medium: Yellow */
+        .speed-buttons button[data-speed="Medium"].active {
+            background-color: #ffc107; /* Yellow/Gold */
+            border-color: #ffc107;
+            color: #1f1f1f; /* Dark text for contrast */
+        }
+
+        /* Slow: Red */
+        .speed-buttons button[data-speed="Slow"].active {
+            background-color: #e63946; /* Red */
+            border-color: #e63946;
+            color: white;
+        }
+        
+        /* Submit Button (Place Order) */
         #orderSubmit { 
             width: 100%; 
-            background-color: #4CAF50; 
+            background-color: #4CAF50; /* Standard Green for positive action */ 
             color: white; 
             padding: 18px 20px; 
             margin-top: 30px; 
@@ -104,144 +127,246 @@
 
         /* Price Display & List */
         .price-list { 
-            border: 1px solid #444; 
+            border: 1px solid #eeeeee; 
             padding: 20px; 
             margin-bottom: 25px; 
-            background-color: #2a2a2a; 
+            background-color: #f7f7f7; /* Very light background for list */
             border-radius: 8px; 
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
         }
         .price-list ul { list-style: none; padding: 0; text-align: left; }
         .price-list ul li { 
             margin-bottom: 12px; 
-            color: #b0b0b0; 
+            color: #555555; 
             font-weight: 500; 
             display: flex; 
             justify-content: space-between; 
-            border-bottom: 1px dotted #3a3a3a;
+            border-bottom: 1px dotted #dddddd;
             padding-bottom: 5px;
         }
-        .price-list ul li span:last-child { color: #66bb6a; font-weight: 700; } 
+        .price-list ul li span:last-child { color: #4CAF50; font-weight: 700; } /* Green for price */
 
         .price-display { 
             font-size: 1.1em; 
             font-weight: bold; 
-            color: #ff6b6b; 
+            color: #e63946; /* Red for emphasis */
             margin-top: 20px; 
             padding: 15px; 
-            background-color: #2c1a1a; 
+            background-color: #fff0f0; 
             border-radius: 8px; 
             text-align: center; 
-            border: 1px solid #ff6b6b; 
+            border: 1px solid #e63946; 
         }
 
 
         /* --- 3. Payment Section Styling --- */
         #payment-section { display: none; padding-top: 20px; } 
         .payment-info { 
-            border: 2px solid #4a90e2; 
+            border: 2px solid #e63946; /* Red Border */
             padding: 25px; 
             border-radius: 10px; 
             margin-bottom: 30px; 
-            background-color: #2a2a35; 
+            background-color: #ffffff; 
             text-align: center;
         }
         
-        .upi-details { font-size: 1.3em; color: #e0e0e0; margin: 15px 0; font-weight: bold; }
+        .upi-details { font-size: 1.3em; color: #333; margin: 15px 0; font-weight: bold; }
         
         #totalAmountDisplay { 
             font-size: 2.0em; 
-            color: #66bb6a; 
+            color: #4CAF50; 
             font-weight: 800; 
             margin-bottom: 25px; 
             padding: 18px; 
-            background-color: #1a1a1a;
-            border: 3px solid #66bb6a; 
+            background-color: #ffffff;
+            border: 3px solid #4CAF50; 
             border-radius: 10px; 
         }
+
+        /* QR Code Sizing and Centering */
+        #upiQrCode {
+            max-width: 100%;
+            height: auto;
+            display: block; 
+            margin: 15px auto; 
+            border: 4px solid #e63946; /* Red Border */
+            border-radius: 8px;
+        }
         
-        /* App Logos */
+        /* UPI Link / Copy Button Style */
+        .upi-link { 
+            display: block; 
+            margin-top: 15px; 
+            padding: 15px; 
+            background-color: #ffc107; /* Yellow for Copy/Action */ 
+            color: #1f1f1f; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            transition: background-color 0.3s; 
+            cursor: pointer;
+        }
+        .upi-link:hover { background-color: #e0a800; }
+        
+        /* App Logos Alignment and Size */
+        .app-logos {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            margin-top: 15px; 
+        }
         .app-logos img { 
             width: 40px; 
             height: 40px; 
             margin: 0 8px; 
             border-radius: 50%; 
             vertical-align: middle; 
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
         }
 
 
-        /* UTR Submit Button */
+        /* UTR Actions Container (for buttons side-by-side) */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Back Button Style (Secondary Red) */
+        #backToOrder {
+            flex-grow: 1;
+            background-color: #ffffff;
+            color: #e63946;
+            padding: 14px 20px;
+            border: 2px solid #e63946;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        #backToOrder:hover {
+            background-color: #f0f0f0;
+        }
+
+
+        /* UTR Submit Button (Primary Red) */
         #utrSubmitButton { 
-            background-color: #ffc107; 
-            color: #1f1f1f; 
+            flex-grow: 1;
+            background-color: #e63946; /* Red for primary action on payment form */
+            color: white; 
             padding: 14px 28px; 
             border: none; 
             border-radius: 8px; 
             cursor: pointer; 
             font-size: 1.1em; 
             font-weight: bold; 
-            margin-top: 20px; 
+            margin-top: 0; /* Managed by .form-actions */
             transition: background-color 0.3s; 
         }
+        #utrSubmitButton:hover { background-color: #d83442; }
 
         /* Messages */
         .message { margin-top: 15px; font-weight: bold; padding: 12px; border-radius: 8px; display: none; text-align: left; }
-        .error { background-color: #5c181a; color: #ff6b6b; border: 1px solid #ff6b6b; } 
-        .success { background-color: #1a3c1d; color: #66bb6a; border: 1px solid #66bb6a; } 
+        .error { background-color: #fff0f0; color: #dc3545; border: 1px solid #dc3545; } /* Light Red BG, Dark Red Text */
+        .success { background-color: #e6ffe6; color: #1e7e34; border: 1px solid #4CAF50; } /* Light Green BG, Dark Green Text */
         
-        /* Gateway Links (Deep/Professional Colors) */
+        /* International Gateway Links Styling (Base) */
         .gateway-link { 
-            display: block; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
             margin-top: 10px; 
             padding: 15px; 
             border-radius: 8px; 
             font-weight: bold; 
             font-size: 1em;
             text-decoration: none;
-            color: white;
-            transition: background-color 0.3s;
             text-align: left;
+            border: 1px solid #eeeeee;
+            transition: background-color 0.3s, box-shadow 0.3s, color 0.3s; 
+        }
+        
+        /* Cryptomus - Black Theme */
+        #cryptomus.gateway-link {
+            background-color: #1f1f1f; /* Black/Dark Grey */
+            border-color: #1f1f1f; 
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+        #cryptomus.gateway-link:hover {
+            background-color: #333333; 
+            border-color: #333333;
+            color: white;
+        }
+        
+        /* Payeer - Blue Theme */
+        #payeer.gateway-link {
+            background-color: #0984e3; /* Blue */
+            border-color: #0984e3; 
+            color: white;
+            box-shadow: 0 2px 5px rgba(9, 132, 227, 0.3);
+        }
+        #payeer.gateway-link:hover {
+            background-color: #0c7cd5; 
+            border-color: #0c7cd5;
+            color: white;
+        }
+        
+        /* Binance Pay - Yellow/Gold Theme */
+        #binancepay.gateway-link {
+            background-color: #f0c419; /* Yellow/Gold */
+            border-color: #f0c419; 
+            color: #1f1f1f; /* Dark text for contrast */
+            box-shadow: 0 2px 5px rgba(240, 196, 25, 0.3);
+        }
+        #binancepay.gateway-link:hover {
+            background-color: #e6b911; 
+            border-color: #e6b911;
+            color: #1f1f1f;
         }
 
-        /* --- 4. Mobile Responsiveness (New Section) --- */
-        @media (max-width: 520px) {
-            /* Reduce overall padding for smaller screens */
-            body {
-                padding: 10px;
-            }
+        /* Specific Logo Styling within Gateway Links */
+        .gateway-link img { 
+            width: 24px;
+            height: 24px;
+            border-radius: 4px; 
+            flex-shrink: 0; 
+        }
 
-            /* Remove margin and adjust padding for full mobile width */
+        /* --- 4. Mobile Responsiveness --- */
+        @media (max-width: 520px) {
+            body { padding: 10px; }
             .container {
                 margin: 0;
                 padding: 20px 15px; 
                 border-radius: 0; 
                 box-shadow: none; 
             }
-            
-            /* Allow speed buttons to wrap if screen is very narrow */
-            .speed-buttons {
-                flex-wrap: wrap; 
-                gap: 5px;
-            }
+            .speed-buttons { flex-wrap: wrap; gap: 5px; }
             .speed-buttons button {
-                flex-basis: calc(33.33% - 10px); /* Tries to keep 3 in a row */
+                flex-basis: calc(33.33% - 10px); 
                 min-width: 90px;
                 font-size: 0.9em;
             }
-
-            /* Adjust font size for large payment display */
             #totalAmountDisplay { 
                 font-size: 1.6em; 
                 padding: 15px;
             }
-
-            /* Reduce logo size for space efficiency */
+            /* Mobile Logo Size - Ensure it stays small */
             .app-logos img {
                 width: 32px;
                 height: 32px;
                 margin: 0 4px;
             }
+            /* Stack buttons on small screens if necessary, though flex grow should handle it */
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #utrSubmitButton { margin-top: 0; }
         }
     </style>
 </head>
@@ -266,10 +391,15 @@
 
         <form id="orderForm" onsubmit="processOrder(event)">
             
-            <label for="username">🎯 Instagram Username <span style="color: #ff6b6b;">*</span></label>
-            <input type="text" id="username" name="username" placeholder="@your_instagram_handle" required>
+            <label for="username">🎯 Instagram Username <span style="color: #e63946;">*</span></label>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   placeholder="@your_instagram_handle" 
+                   required 
+                   oninput="formatUsername(this)">
             
-            <label for="whatsapp">📱 WhatsApp Number <span style="color: #ff6b6b;">*</span></label>
+            <label for="whatsapp">📱 WhatsApp Number <span style="color: #e63946;">*</span></label>
             <input type="text" id="whatsapp" name="whatsapp" placeholder="98XXXXXXXX" required pattern="[0-9]{10,15}">
             
             <label>⏱️ Service Speed</label>
@@ -280,7 +410,7 @@
                 <input type="hidden" id="service_speed" name="service_speed" value="Fast"> 
             </div>
             
-            <label for="quantity">🔢 Quantity (Min: 100, Max: 1,00,000) <span style="color: #ff6b6b;">*</span></label>
+            <label for="quantity">🔢 Quantity (Min: 100, Max: 1,00,000) <span style="color: #e63946;">*</span></label>
             <input type="text" 
                        id="quantity" 
                        name="quantity" 
@@ -313,7 +443,7 @@
 
         <div class="payment-info">
             
-            <h3 style="color: #66bb6a; border-bottom: 1px dashed #3a3a3a; padding-bottom: 10px;">🇮🇳 Pay via UPI (Recommended)</h3>
+            <h3 style="color: #4CAF50; border-bottom: 1px dashed #dddddd; padding-bottom: 10px;">🇮🇳 Pay via UPI (Recommended)</h3>
             
             <div class="qr-code">
                 <img id="upiQrCode" src="" alt="Scan QR Code to Pay">
@@ -323,55 +453,61 @@
                 UPI ID: **mixy@ptyes**
             </div>
             
-            <a href="#" id="upiLink" class="upi-link" target="_blank">
-                Pay Now with UPI App
+            <a href="javascript:void(0);" id="upiLink" class="upi-link" onclick="copyUpiId(event)">
+                📋 Copy UPI ID
             </a>
             
-            <p style="color: #66bb6a; font-weight: 600; margin-top: 15px;">
+            <p style="color: #4CAF50; font-weight: 600; margin-top: 15px;">
                 Please pay the EXACT amount shown above.
             </p>
             
-            <div class="app-logos" style="margin-top: 15px;">
+            <div class="app-logos">
                 <img src="paytm_logo.png" alt="Paytm">
                 <img src="phonepe_logo.png" alt="PhonePe">
                 <img src="gpay_logo.png" alt="Google Pay">
                 <img src="bhim_upi_logo.png" alt="BHIM UPI">
-                <p style="font-size: 0.8em; color: #999;">(Ensure these logo files are uploaded to your server)</p>
+                <img src="fampay_logo.png" alt="Fampay">
+                <img src="mobikwik_logo.png" alt="Mobikwik">
             </div>
+            <p style="font-size: 0.8em; color: #999; margin-top: 5px;">All UPI Payments App Accepted</p>
 
-            <hr style="border: 0; height: 1px; background: #3a3a3a; margin: 30px 0;">
 
-            <h3 style="color: #4a90e2; border-bottom: 1px dashed #3a3a3a; padding-bottom: 10px;">🌍 International Payment (5% Bonus)</h3>
+            <hr style="border: 0; height: 1px; background: #dddddd; margin: 30px 0;">
+
+            <h3 style="color: #e63946; border-bottom: 1px dashed #dddddd; padding-bottom: 10px;">🌍 International Payment (5% Bonus)</h3>
 
             <a href="#" id="cryptomus" class="gateway-link" onclick="alert('Redirecting to Cryptomus...'); return false;">
-                <img src="https://via.placeholder.com/24/00a068/ffffff?text=C" alt="Cryptomus Logo">
-                Cryptomus Payment | USDT | Bitcoin | Dogecoin | Ethereum | Litecoin (5% Bonus)
+                <img src="cryptomus_logo.png" alt="Cryptomus Logo">
+                <span>Cryptomus Payment | USDT | Bitcoin | Dogecoin | Ethereum | Litecoin (5% Bonus)</span>
             </a>
 
             <a href="#" id="payeer" class="gateway-link" onclick="alert('Redirecting to Payeer/Advcash...'); return false;">
-                <img src="https://via.placeholder.com/24/0087f7/ffffff?text=P" alt="Payeer Logo">
-                Payeer | Advcash | Bitcoin | Perfect Money | Ethereum (5% Bonus)
+                <img src="payeer_logo.png" alt="Payeer Logo">
+                <span>Payeer | Advcash | Bitcoin | Perfect Money | Ethereum (5% Bonus)</span>
             </a>
             
             <a href="#" id="binancepay" class="gateway-link" onclick="alert('Redirecting to Binance Pay...'); return false;">
-                <img src="https://via.placeholder.com/24/f3ba2f/333333?text=B" alt="Binance Pay Logo">
-                Binance Pay (5% Bonus)
+                <img src="binance_pay_logo.png" alt="Binance Pay Logo">
+                <span>Binance Pay (5% Bonus)</span>
             </a>
             
-            <p style="color: #ff6b6b; margin-top: 20px;">
+            <p style="color: #e63946; margin-top: 20px;">
                 **Note:** International payments require manual confirmation using the form below.
             </p>
 
         </div>
 
-        <hr style="border: 0; height: 1px; background: #3a3a3a;">
+        <hr style="border: 0; height: 1px; background: #dddddd;">
         
         <form id="utrForm">
-            <h3 style="color: #4a90e2;">Enter Transaction ID / UTR / Hash</h3>
+            <h3 style="color: #e63946;">Enter Transaction ID / UTR / Hash</h3>
             <input type="text" id="utrInput" placeholder="Enter your 12-digit UTR or Crypto Hash" 
                     maxlength="50" required>
             
-            <button type="submit" id="utrSubmitButton">Verify Payment</button>
+            <div class="form-actions">
+                <button type="button" id="backToOrder" onclick="goBackToOrder()">⬅️ Back to Order</button>
+                <button type="submit" id="utrSubmitButton">Verify Payment</button>
+            </div>
             
             <div id="messageDisplay" class="message"></div>
             
@@ -399,6 +535,70 @@
     const upiQrCodeImg = document.getElementById('upiQrCode'); 
     const upiLink = document.getElementById('upiLink');
 
+
+    // ==============================================
+    //            USERNAME FORMATTING LOGIC
+    // ==============================================
+
+    function formatUsername(input) {
+        let value = input.value;
+
+        // 1. Convert entire input to lowercase
+        value = value.toLowerCase();
+
+        // 2. Ensure it starts with '@' and remove any extra '@' symbols
+        if (value.length > 0 && !value.startsWith('@')) {
+            // Remove any other '@' symbols before prepending
+            value = '@' + value.replace(/@/g, ''); 
+        } else if (value.startsWith('@')) {
+            // Remove any other '@' symbols if the user tries to type them after the first one
+            const content = value.substring(1).replace(/@/g, '');
+            value = '@' + content;
+        }
+
+        // 3. Update the input field
+        input.value = value;
+    }
+
+
+    // ==============================================
+    //            HELPER FUNCTIONS 
+    // ==============================================
+
+    function copyUpiId(event) {
+        event.preventDefault(); 
+        const button = document.getElementById('upiLink');
+        
+        navigator.clipboard.writeText(UPI_ID)
+            .then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '✅ Copied!';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Could not copy text: ', err);
+                alert(`Copy failed. Please copy manually: ${UPI_ID}`);
+            });
+    }
+
+    // NEW FUNCTION: Go back to the order screen
+    function goBackToOrder() {
+        paymentSection.style.display = 'none';
+        orderSection.style.display = 'block';
+        
+        // Reset the payment verification area
+        utrInput.value = '';
+        messageDisplay.style.display = 'none';
+        messageDisplay.classList.remove('success', 'error');
+        document.getElementById('utrSubmitButton').disabled = false;
+        utrInput.disabled = false;
+        
+        // Scroll to the top of the order form
+        orderSection.scrollIntoView({ behavior: 'smooth' });
+    }
 
     // ==============================================
     //            ORDER FORM LOGIC
@@ -432,7 +632,6 @@
              quantityInput.value = quantity;
         }
 
-        // Enforce Minimum Quantity on Calculation
         if (quantity < MIN_QTY) {
             quantity = MIN_QTY;
         }
@@ -464,19 +663,16 @@
         const paymentAmount = parseFloat(finalPrice).toFixed(2);
         payableAmountSpan.textContent = paymentAmount;
         
-        // 1. UPI Deep Link for Auto-Select Amount
-        const deepLink = `upi://pay?pa=${UPI_ID}&pn=SMM+Service&am=${paymentAmount}&cu=INR`;
-        upiLink.href = deepLink;
-
-        // 2. Generate and Update QR Code (Happens only after order button click)
         const qrCodeData = `upi://pay?pa=${UPI_ID}&pn=SMM+Service&am=${paymentAmount}&cu=INR`;
         const qrCodeAPIUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeData)}`;
         upiQrCodeImg.src = qrCodeAPIUrl;
         upiQrCodeImg.style.display = 'block';
         
-        // 3. Display Payment Section
         orderSection.style.display = 'none';
         paymentSection.style.display = 'block';
+        
+        // Scroll to the top of the payment section
+        paymentSection.scrollIntoView({ behavior: 'smooth' });
     }
 
 
@@ -498,7 +694,6 @@
             utrInput.focus();
             
         } else {
-            // NOTE: This is a client-side simulation. Real validation requires a server.
             const finalAmount = payableAmountSpan.textContent;
 
             messageDisplay.classList.add('success');
@@ -509,10 +704,9 @@
         }
     });
 
-    // --- Initialization (Runs immediately after HTML structure is loaded) ---
+    // --- Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
         
-        // Calculate initial price only after the DOM is ready
         calculatePrice(); 
         
         const speedButtons = document.querySelectorAll('.speed-buttons button');
